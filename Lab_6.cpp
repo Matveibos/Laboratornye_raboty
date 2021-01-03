@@ -4,68 +4,54 @@ using namespace std;
 
 template <class X, class Y> int perevorot(X& length, Y& mas)
 {
-	cout << "here work template" << endl;
+	cout << "Здесь работает шаблон" << endl;
 	int i = 0;
-	while (i < length)
+	int j = length-1;
+	char c;
+	while (i < length/2 || j > length/2)
 	{
-		if (mas[i] == element)
-		{
-			int j = 0;
-			while (i + j < length - 1)
-			{
-				mas[i + j] = mas[i + j + 1];
-				j++;
-			}
-			cout << "length " << length << endl;
-			length = length - 1;
-			i--;
-		}
+		c = mas[i];
+		mas[i] = mas[j];
+		mas[j] = c;
 		i++;
+		j--;
 	}
 	return length;
 }
 
-int deleteargs(int length, char* mas, char element)
+int perevorot(int length, char* mas, char element)
 {
-	cout << "here work function (char*)" << endl;
+	cout << "Здесь работает функция" << endl;
 	int i = 0;
-	while (i < length)
+	int j = length-1;
+	char c;
+	while (i < length / 2 || j > length / 2)
 	{
-		if (mas[i] == element)
-		{
-			int j = 0;
-			while (i + j < length - 1)
-			{
-				mas[i + j] = mas[i + j + 1];
-				j++;
-			}
-			length = length - 1;
-			cout << "length " << length << endl;
-			i--;
-		}
+		c = mas[i];
+		mas[i] = mas[j];
+		mas[j] = c;
 		i++;
+		j--;
 	}
 	return length;
 }
 
 int main()
 {
+	setlocale(LC_ALL, "Russian");
 	int x, i;
-	char z;
 	char* y;
-	cout << "Enter length" << endl;
+	cout << "Введите длину" << endl;
 	cin >> x;
-	cout << "Enter delete element" << endl;
-	cin >> z;
 	y = new char[x];
-	cout << "Enter mas" << endl;
+	cout << "Введите массив" << endl;
 	for (i = 0; i < x; i++)
 	{
 		cin >> y[i];
 	}
 	cout << endl;
-	x = deleteargs(x, y, z);
-	cout << "mas after delete" << endl;
+	x = perevorot(x, y);
+	cout << "массив после переворота" << endl;
 	for (i = 0; i < x; i++)
 		cout << y[i] << " ";
 	return 0;
