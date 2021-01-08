@@ -1,446 +1,420 @@
-﻿#include <iostream>
-#include <string>
-#include <ostream>
-
-class MyException {
-private:
-    std::string error;
+#include <iostream>
+using namespace std;
+class Sotrudnic 
+{
 public:
-    MyException(std::string _error = "Something wrong") : error(_error) {};
-    const char* what() {
-        return error.c_str();
+    
+    Sotrudnic(int id = 0, string name = "", int salary = 0) : m_id(id), m_name(name), m_salary(salary) {}
+    
+    
+    ~Sotrudnic() {}
+
+    int getId() 
+    {
+        return m_id;
     }
+
+    string getName() 
+    {
+        return m_name;
+    }
+
+    int getSalary() 
+    {
+        return m_salary;
+    }
+
+private:
+    int m_id;
+    string m_name;
+    int m_salary;
 };
 
 
-class exam
+class Exception
 {
 private:
-    int id;
-    std::string name;
-    float result;
+    int error;
+
 public:
-    exam() : name(" "), result(0.0)
+    Exception()
     {
-        id++;
+        error = 0;
     }
-    exam(std::string n) : name(n), result(0.0)
+    Exception(int error)
     {
-        id++;
+        this->error = error;
     }
-    exam(std::string n, float r) : name(n), result(r)
+    void what()
     {
-        id++;
-    }
-    ~exam()
-    { }
-    std::string get_name()
-    {
-        return this->name;
-    }
-    int get_id()
-    {
-        return this->id;
-    }
-    float get_result()
-    {
-        return this->result;
-    }
-    bool operator< (exam ex)
-    {
-        return this->name < ex.name;
-    }
-    bool operator==(exam ex)
-    {
-        return (this->name == ex.name) && (this->result == ex.result);
-    }
-    friend std::ostream& operator <<(std::ostream& out, exam& ex);
-    exam& operator= (exam ex)
-    {
-        this->name = ex.name;
-        this->result = ex.result;
-        return *this;
+        if (error == 0) cout << "exception" << endl;
+        if (error == 1) cout << "Cant insert Dublicate!" << endl;
+        if (error == 2) cout << "No such value!" << endl;
+        if (error == 3) cout << "pointer is empty" << endl;
     }
 };
 
-std::ostream& operator <<(std::ostream& out, exam& ex)
+template <class T>
+class Iterator;
+template <class T>
+class List;
+
+template <class T>
+class Node 
 {
-    return out << "name: " << ex.get_name() << "/t" << "Result: " << ex.get_result();
-}
-
-template <typename T>
-class Double_list {
-public:
-    static int size;
-
-    class Node {
-    public:
-        Node* next;
-        Node* prev;
-        T data;
-        Node() {};
-        Node(T _data) {
-            size++;
-            this->data = _data;
-        }
-    };
-
-    class Iterator {
-    private:
-        Node* node;
-    public:
-        Iterator() : node() {};
-        Iterator(Iterator& it) : node(it.node) {};
-        Iterator(Node* node) : node(node) {};
-        Iterator& operator++() {
-            node = node->next;
-            return *this;
-        }
-        Iterator& operator+(int value) {
-            int i = 0;
-            while (i < value) {
-                node = node->next;
-                i++;
-            }
-            return *this;
-        }
-        Iterator& operator-(int value) {
-            int i = 0;
-            while (i < value) {
-                node = node->prev;
-                i++;
-            }
-            return *this;
-        }
-        Iterator& operator--() {
-            node = node->prev;
-            return *this;
-        }
-        Iterator& operator=(Iterator it) {
-            this->node = it.node;
-            return *this;
-        }
-        T& operator*() {
-            return node->data;
-        }
-        bool operator==(Iterator it) {
-            return this->node == it.node;
-        }
-        bool operator!=(Iterator it) {
-            return this->node != it.node;
-        }
-        bool operator>(Iterator it) {
-            return this->node > it.node;
-        }
-        bool operator<(Iterator it) {
-            return this->node < it.node;
-        }
-
-    };
-
-    int getSize() {
-        return size;
-    }
-
 private:
+    T data;
+    Node* prev;
+    Node* next;
     Node* head;
-    Node* tail;
-    Iterator* headIterator;
-    Iterator* tailIterator;
 
-public:
-    Double_list() {
-        head = tail = nullptr;
-    }
-
-    Double_list(T _data) {
-        tail = head = new Node(_data);
-        headIterator = tailIterator = new Iterator(head);
-    }
-
-    int find(T _data) {
-        Node* tmp = head;
-        int index = 0;
-        while (tmp != nullptr) {
-            if (tmp->data == _data) {
-                return index;
-            }
-            index++;
-            tmp = tmp->next;
-        }
-        return index;
-    }
-
-    void remove_back() {
-        Node* tmp = tail;
-        tail = tail->prev;
-        tail->next = nullptr;
-        delete tmp;
-        size--;
-        tailIterator = new Iterator(tail);
-    }
-
-    void remove_front() {
-        Node* tmp = head;
-        head = head->next;
-        head->prev = nullptr;
-        delete tmp;
-        size--;
-        headIterator = new Iterator(head);
-    }
-
-    void push_back(T _data) {
-        Node* current = new Node(_data);
-        if (head == nullptr) {
-            current->next = nullptr;
-            current->prev = nullptr;
-            tail = current;
-            head = current;
-        }
-        else {
-            current->next = nullptr;
-            current->prev = tail;
-            tail->next = current;
-            tail = current;
-            tailIterator = new Iterator(tail);
-        }
-    }
-
-    void push_front(T _data) {
-        Node* current = new Node(_data);
-        if (head == nullptr) {
-            current->next = nullptr;
-            current->prev = nullptr;
-            tail = current;
-            head = current;
-        }
-        else {
-            current->prev = nullptr;
-            current->next = head;
-            head->prev = current;
-            head = current;
-            headIterator = new Iterator(head);
-        }
-    }
-
-    void add_without_duplicates(T _data) {
-        Node* tmp = head;
-        while (tmp != nullptr) {
-            if (tmp->data == _data) {
-                throw MyException("Duplicate");
-                return;
-            }
-            tmp = tmp->next;
-        }
-        Node* current = new Node(_data);
-        current->next = nullptr;
-        current->prev = tail;
-        tail->next = current;
-        current->data = _data;
-        tail = current;
-        tailIterator = new Iterator(tail);
-    }
-
-    void print_list() {
-        if (size != 0) {
-            Node* tmp = head;
-            while (tmp != nullptr) {
-                std::cout << tmp->data << std::endl;
-                tmp = tmp->next;
-            }
-        }
-        else {
-            throw MyException("Empty list");
-        }
-    }
-
-    Iterator& begin() {
-        return *headIterator;
-    }
-
-    Iterator& end() {
-        return *tailIterator;
-    }
-
-    bool is_empty() {
-        return head == tail;
-    }
-
-    T& operator[](int index) {
-        Node* tmp = head;
-        int cnt = 0;
-        while (cnt != index) {
-            cnt++;
-            tmp = tmp->next;
-        }
-        return tmp->data;
-    }
-
+    friend Iterator<T>;
+    friend List<T>;
 };
 
-template <typename T>
-void bubble_sort(Double_list<T>& list) {
-    for (int i = 0; i < list.getSize() - 1; i++) {
-        for (int j = 0; j < list.getSize() - 1 - i; j++) {
-            if (list[j + 1] < list[j]) {
-                T tmp = list[j];
-                list[j] = list[j + 1];
-                list[j + 1] = tmp;
+template <class T>
+class Iterator 
+{
+public:
+   
+    Iterator() 
+    {
+        nodePointer = nullptr;
+    }
+    
+    Iterator(Node<T>* nodePointer) 
+    {
+        this->nodePointer = nodePointer;
+    }
+    
+    ~Iterator() 
+    {
+        nodePointer = nullptr;
+    }
+    bool operator == (Iterator other) 
+    {
+        if (nodePointer == other.nodePointer)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;
+        }
+    }
+    bool operator != (Iterator other) 
+    {
+        return !operator==(other);
+    }
+
+    T GetValue() 
+    {
+        if (nodePointer == nullptr) 
+        {
+            throw 3;
+        }
+        return nodePointer->data;
+    }
+    
+    void Next() 
+    {
+        if (nodePointer->next != nullptr) 
+        {
+            nodePointer = nodePointer->next;
+        }
+    }
+    
+    void Prev() 
+    {
+        if (nodePointer->prev != nullptr) 
+        {
+            nodePointer = nodePointer->prev;
+        }
+    }
+private:
+    Node<T>* nodePointer;
+};
+
+template <class T>
+class List
+{
+public:
+    List() 
+    {
+        head = nullptr;
+        size = 0;
+    }
+
+    Iterator<T> Begin() 
+    {
+        Node<T>* temp = head;
+        while (temp->prev) 
+        {
+            temp = temp->prev;
+        }
+        return temp;
+    }
+
+    Iterator<T> End() 
+    {
+        Node<T>* temp = head;
+        while (temp->next) {
+            temp = temp->next;
+        }
+        return temp;
+    }
+
+    Node<T>* GetNodeByValue(T value) 
+    {
+        Node<T>* temp = head;
+        while (temp) {
+            if (temp->data != value) 
+            {
+                temp = temp->next;
+                continue;
+            }
+            else 
+            {
+                return temp;
+            }
+        }
+        throw 2;
+    }
+
+    void InNode(T l_data) 
+    {
+        if (!head) 
+        {
+            head = GetFreeNode(l_data, nullptr);
+            size++;
+        }
+        else 
+        {
+            Node<T>* iterator = head;
+            while (iterator) 
+            {
+                if (iterator->next) 
+                {
+                    iterator = iterator->next;
+                    continue;
+                } /*else if (iterator->data == l_data){
+                     throw 1;
+                }*/
+                else 
+                {
+                    iterator->next = GetFreeNode(l_data, iterator);
+                    size++;
+                    return;
+                }
             }
         }
     }
-}
 
-
-template <typename T>
-int Double_list<T>::size = 0;
-
-
-int main() {
-    std::cout << "Word with int" << std::endl;
-    Double_list<int> intec;
-
-    try
+    void DelNodeByValue(T l_value) 
     {
-        intec.print_list();
+        Node<T>* target = GetNodeByValue(l_value);
+        RawEraseNode(target);
     }
-    catch (MyException& ex)
+
+    void bubble_sort() 
     {
-        std::cout << "Error: " << ex.what() << std::endl;
+        Node<T>* ptr;
+
+        for (int i = 0; i < size; i++) 
+        {
+
+            Node<T>* elem_1 = head;
+            Node<T>* elem_2 = head->next;
+
+            for (int j = 0; j < size - 1; j++) 
+            {
+
+                if (elem_1->data > elem_2->data) 
+                {
+
+                    if (elem_1->prev) 
+                    {
+                        ptr = elem_1->prev;
+                    }
+                    else {
+                        ptr = nullptr;
+                    }
+
+                    if (elem_1 == head) 
+                    {
+                        head = elem_2;
+                        head->prev = nullptr;
+                    }
+                    if (elem_1->prev) 
+                    {
+                        elem_1->prev->next = elem_2;
+                    }
+                    if (elem_2->next) 
+                    {
+                        elem_2->next->prev = elem_1;
+                        elem_1->next = elem_2->next;
+                    }
+                    else
+                    {
+                        elem_1->next = nullptr;
+                    }
+
+                    elem_1->prev = elem_2;
+                    elem_2->next = elem_1;
+
+                    if (ptr) 
+                    {
+                        elem_2->prev = ptr;
+                    }
+
+                    ptr = elem_1;
+                    elem_1 = elem_2;
+                    elem_2 = ptr;
+
+                }
+                elem_1 = elem_1->next;
+                elem_2 = elem_2->next;
+            }
+        }
     }
 
-    intec.push_back(33);
-    intec.push_back(15);
-    intec.push_front(46);
-
-    try {
-        intec.add_without_duplicates(15);
-    }
-    catch (MyException& ex) {
-        std::cout << "Error: " << ex.what() << std::endl;
-    }
-
-    intec.add_without_duplicates(24);
-    intec.remove_back();
-
-    std::cout << "Before sort: " << std::endl;
-    intec.print_list();
-
-    bubble_sort(intec);
-
-    std::cout << "First element after sort: " << *intec.begin() << std::endl;
-
-    std::cout << "Index of Alex: " << intec.find(14) << std::endl;
-    std::cout << "Size of list: " << intec.getSize() << std::endl;
-
-    std::cout << std::endl;
-
-    intec.print_list();
-
-    std::cout << "After changing" << std::endl;
-
-    auto i = intec.begin();
-    *i = 12;
-    *(i + 1) = 40;
-
-    intec.print_list();
-
-    std::cout << "Work with double" << std::endl;
-
-    Double_list<double> doublic;
-
-    try
+    void print() 
     {
-        doublic.print_list();
+        Iterator<T> it = this->Begin();
+        while (true) {
+            if (it == this->End()) 
+            {
+                cout << it.GetValue() << "; ";
+                break;
+            }
+            cout << it.GetValue() << "; ";
+            try {
+                it.Next();
+            }
+            catch (int exIndex) {
+                Exception ex(exIndex);
+                ex.what();
+            }
+        }
+        cout << endl;
     }
-    catch (MyException& ex)
+private:
+    Node<T>* head;
+    int size;
+
+    void RawEraseNode(Node<T>* target) 
     {
-        std::cout << "Error: " << ex.what() << std::endl;
+        if (target->prev && target->next) 
+        {
+            target->prev->next = target->next;
+            target->next->prev = target->prev;
+        }
+        else if (target->next == nullptr) 
+        {
+            target->prev->next = nullptr;
+        }
+        else if (target->prev == nullptr) 
+        {
+            head->next->prev = nullptr;
+            head = head->next;
+        }
+        delete target;
+        size--;
     }
 
-    doublic.push_back(33.1);
-    doublic.push_back(15.2342);
-    doublic.push_front(46.1314);
-
-    try {
-        doublic.add_without_duplicates(15.2342);
+    Node<T>* GetFreeNode(T l_data, Node<T>* iterator) 
+    {
+        Node<T>* temp = new Node<T>;
+        temp->data = l_data;
+        temp->next = nullptr;
+        temp->prev = iterator;
+        return temp;
     }
-    catch (MyException& ex) {
-        std::cout << "Error: " << ex.what() << std::endl;
+};
+
+int main()
+{
+    setlocale(LC_ALL,"Russian");
+    Sotrudnic Sot_1{ 1,"Ivanov",500 };
+    Sotrudnic Sot_2{ 2,"Petrov",1000 };
+    Sotrudnic Sot_3{ 3,"Sidorov",700 };
+
+    List<Sotrudnic> list;
+    list.InNode(Sot_1); 
+    list.InNode(Sot_2);
+    list.InNode(Sot_3);
+
+    Iterator<Sotrudnic> it = list.Begin(); //получение значений полей объектов
+    while (true)
+    {
+        if (it == list.End())
+        {
+            cout << it.GetValue().getId() << ";"; 
+            cout << it.GetValue().getSalary() << ";";
+            cout << it.GetValue().getName() << ";";
+            cout << endl;
+            break;
+        }
+        cout << it.GetValue().getId() << "; ";
+        cout << it.GetValue().getSalary() << "; ";
+        cout << it.GetValue().getName() << "; ";
+        cout << endl;
+        try
+        {
+            it.Next();
+        }
+        catch (int exIndex)
+        {
+            Exception ex(exIndex);
+            ex.what();
+        }
     }
+    cout << endl;
 
-    doublic.add_without_duplicates(24);
-    doublic.remove_back();
 
-    std::cout << "Before sort: " << std::endl;
-    doublic.print_list();
 
-    bubble_sort(doublic);
 
-    std::cout << "First element after sort: " << *doublic.begin() << std::endl;
+    List<int> list_int;
 
-    std::cout << "Index of Alex: " << doublic.find(14) << std::endl;
-    std::cout << "Size of list: " << doublic.getSize() << std::endl;
+    list_int.InNode(7);
+    list_int.InNode(4);
+    list_int.InNode(3);
+    list_int.InNode(11);
 
-    std::cout << std::endl;
+    list_int.bubble_sort();
+    list_int.print();
 
-    doublic.print_list();
+    list_int.DelNodeByValue(4);
+    cout << "Удаление"<<endl;
+    list_int.print();
+    cout << endl;
 
-    std::cout << "After changing" << std::endl;
+    List<double> list_double;
 
-    auto b = doublic.begin();
-    *b = 11.9;
-    *(b + 1) = 39.5;
+    list_double.InNode(11.3);
+    list_double.InNode(6.2);
+    list_double.InNode(4.3);
+    list_double.InNode(15.9);
 
-    doublic.print_list();
+    list_double.bubble_sort();
+    list_double.print();
+    cout << "Удаление" << endl;
+    list_double.DelNodeByValue(4.3);
+    list_double.print();
+    cout << endl;
 
-    std::cout << "Work with My class" << std::endl;
+    List<char> list_char;
 
-    Double_list<exam> list;
+    list_char.InNode('d');
+    list_char.InNode('y');
+    list_char.InNode('u');
+    list_char.InNode('a');
 
-    try {
-        list.print_list();
-    }
-    catch (MyException& ex) {
-        std::cout << "Error: " << ex.what() << std::endl;
-    }
+    list_char.bubble_sort();
+    list_char.print();
+    cout << "Удаление" << endl;
+    list_char.DelNodeByValue('y');
+    list_char.print();
 
-    list.push_back({ "John", 99.9 });
-    list.push_back({ "Alex", 80.2 });
-    list.push_front({ "Leo", 12 });
-
-    try {
-        list.add_without_duplicates({ "Alex", 80.2 });
-    }
-    catch (MyException& ex) {
-        std::cout << "Error: " << ex.what() << std::endl;
-    }
-
-    list.add_without_duplicates({ "Bob", 60.1 });
-    list.remove_back();
-
-    std::cout << "Before sort: " << std::endl;
-    list.print_list();
-
-    bubble_sort(list);
-
-    std::cout << "First element after sort: " << *list.begin() << std::endl;
-
-    std::cout << "Index of Alex: " << list.find({ "Alex", 80.2 }) << std::endl;
-    std::cout << "Size of list: " << list.getSize() << std::endl;
-
-    std::cout << std::endl;
-
-    list.print_list();
-
-    std::cout << "After changing" << std::endl;
-
-    auto a = list.begin();
-    *a = { "Harry", 12 };
-    *(a + 1) = { "Joseph", 40 };
-
-    list.print_list();
-
-    system("pause;");
     return 0;
 }
