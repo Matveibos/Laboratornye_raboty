@@ -160,10 +160,12 @@ std::list<cook::Sotrudnic>::iterator cook::Algoritms::Algoritm2(std::list<Sotrud
     return it_1;
 }
 
+
 void cook::Algoritms::Algoritm1() {
-    std::cout << "Начат алгоритм 1" << std::endl;
+    std::cout << "Проверка введенного символа" << std::endl;
     std::fstream outFile;
-    outFile.open("srting.txt");
+    outFile.open("string.txt");
+
     try {
         if (!outFile.is_open()) {
             throw 1;
@@ -180,7 +182,7 @@ void cook::Algoritms::Algoritm1() {
     std::list<std::string> strList;
     int i = 0, amount_received_symbol = 0;
     char received_symbol; char* mass = new char[10];
-    std::cout << "Печатаемый символ: ";
+    std::cout << "Введите символ: ";
     std::cin >> received_symbol;
 
     while (!outFile.eof()) {
@@ -193,13 +195,13 @@ void cook::Algoritms::Algoritm1() {
             i++;
         }
         _itoa_s(amount_received_symbol, mass, 10, 10);
-        strList.push_back(buffer + " Число полученных сомволов имвол: " + mass);
+        strList.push_back(buffer + " Число введенных символов: " + mass);
         amount_received_symbol = 0; i = 0;
     }
 
     std::cout << "Aлгоритм окончен" << std::endl;
     outFile.close();
-    std::cout << "Файл закрыт" << std::endl;
+    std::cout << "Файл и получаемыми данными закрыт" << std::endl;
 
     std::ofstream inFile("string2.txt");
 
@@ -207,7 +209,7 @@ void cook::Algoritms::Algoritm1() {
         if (!inFile.is_open()) {
             throw 1;
         }
-        std::cout << "Первый файл файл открыт" << std::endl << std::endl;
+        std::cout << "Второй файл открыт" << std::endl << std::endl;
     }
     catch (int index) {
         Exception ex(index);
@@ -221,7 +223,7 @@ void cook::Algoritms::Algoritm1() {
         std::cout << *it << std::endl;
         ++it;
     }
-    std::cout << std::endl << "Данные были введены" << std::endl;
+    std::cout << std::endl << "Данные записаны" << std::endl;
     inFile.close();
     std::cout << "Второй файл закрыт" << std::endl;
 }
